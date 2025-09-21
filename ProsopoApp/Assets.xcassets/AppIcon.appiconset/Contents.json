@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "Prosopo_Logo_Light_Mode.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -12,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "Prosopo_Logo_Dark_Mode.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
