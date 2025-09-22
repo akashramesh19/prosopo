@@ -24,9 +24,7 @@ struct EditPersonaView: View {
     @State private var errorMessage: String?
 
     private let original: Persona
-    private let service = PersonaService()
-    private let promptService = PromptService()
-
+    
     init(persona: Persona) {
         self._name = State(initialValue: persona.name)
         self._role = State(initialValue: persona.role)
@@ -64,9 +62,7 @@ struct EditPersonaView: View {
 
             Section {
                 Button {
-                    Task {
-                        await save()
-                    }
+                    Task { await save() }
                 } label: {
                     if isSaving {
                         ProgressView().frame(maxWidth: .infinity)
@@ -76,14 +72,13 @@ struct EditPersonaView: View {
                 }
                 .disabled(isSaving || !canSave)
 
-               //Delete the Persona
+                //Delete the Persona
                 Button(role: .destructive) {
-                    Task {
-                        await delete()
-                    }
+                    Task { await delete() }
                 } label: {
                     Text("Delete Persona").frame(maxWidth: .infinity)
                 }
+                .disabled(isSaving)
             }
         }
         .navigationTitle("Prosopo")
@@ -103,6 +98,7 @@ struct EditPersonaView: View {
     private func save() async {
         isSaving = true
         defer { isSaving = false }
+
         var updated = original
         updated.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         updated.role = role.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -111,9 +107,14 @@ struct EditPersonaView: View {
         updated.consistency = consistency
 
         do {
+            //Creating Service only when required as it caused an issue when going into edit from view persona page
+            let promptService = PromptService()
+            let service = PersonaService()
+
             //Regenerating prompt to stay consistent with Add flow
             let newPrompt = try await promptService.generatePrompt(for: updated)
             updated.prompt = newPrompt
+
             try await service.updatePersona(updated)
             dismiss()
         } catch {
@@ -126,6 +127,7 @@ struct EditPersonaView: View {
         isSaving = true
         defer { isSaving = false }
         do {
+            let service = PersonaService()
             try await service.deletePersona(original)
             dismiss()
         } catch {

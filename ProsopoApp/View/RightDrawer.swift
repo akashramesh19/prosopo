@@ -21,10 +21,11 @@ struct RightDrawer<Drawer: View, Content: View>: View {
 
             ZStack(alignment: .trailing) {
                 // main content stays untouched
+                // ZIndex is expiclitly mentioned to create the hierarchy within the stack
                 content()
                     .zIndex(0)
 
-                // show overlay + drawer ONLY when open
+                // show overlay + drawer only when open
                 if isOpen {
                     Color.black.opacity(0.25)
                         .ignoresSafeArea()
