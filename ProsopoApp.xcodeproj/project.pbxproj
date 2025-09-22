@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		383F445F2E80459500ACE475 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 383F445E2E80459500ACE475 /* FirebaseAuth */; };
+		383F44612E80459500ACE475 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44602E80459500ACE475 /* FirebaseCore */; };
+		383F44632E80459500ACE475 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44622E80459500ACE475 /* FirebaseFirestore */; };
+		383F44E12E811CCE00ACE475 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44E02E811CCE00ACE475 /* GoogleSignIn */; };
+		383F44E32E811CCE00ACE475 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44E22E811CCE00ACE475 /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		383F440B2E80148B00ACE475 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +37,22 @@
 		383F44142E80148B00ACE475 /* ProsopoAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProsopoAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		383F44E52E811D2300ACE475 /* Exceptions for "ProsopoApp" folder in "ProsopoApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 383F43F72E80148900ACE475 /* ProsopoApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		383F43FA2E80148900ACE475 /* ProsopoApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				383F44E52E811D2300ACE475 /* Exceptions for "ProsopoApp" folder in "ProsopoApp" target */,
+			);
 			path = ProsopoApp;
 			sourceTree = "<group>";
 		};
@@ -52,6 +73,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				383F44E32E811CCE00ACE475 /* GoogleSignInSwift in Frameworks */,
+				383F44612E80459500ACE475 /* FirebaseCore in Frameworks */,
+				383F44E12E811CCE00ACE475 /* GoogleSignIn in Frameworks */,
+				383F445F2E80459500ACE475 /* FirebaseAuth in Frameworks */,
+				383F44632E80459500ACE475 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +138,11 @@
 			);
 			name = ProsopoApp;
 			packageProductDependencies = (
+				383F445E2E80459500ACE475 /* FirebaseAuth */,
+				383F44602E80459500ACE475 /* FirebaseCore */,
+				383F44622E80459500ACE475 /* FirebaseFirestore */,
+				383F44E02E811CCE00ACE475 /* GoogleSignIn */,
+				383F44E22E811CCE00ACE475 /* GoogleSignInSwift */,
 			);
 			productName = ProsopoApp;
 			productReference = 383F43F82E80148900ACE475 /* ProsopoApp.app */;
@@ -195,6 +226,10 @@
 			);
 			mainGroup = 383F43EF2E80148900ACE475;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				383F445D2E80459500ACE475 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				383F44DF2E811CCE00ACE475 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 383F43F92E80148900ACE475 /* Products */;
 			projectDirPath = "";
@@ -398,6 +433,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ProsopoApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ProsopoApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -426,6 +462,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ProsopoApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ProsopoApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -552,6 +589,53 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		383F445D2E80459500ACE475 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.3.0;
+			};
+		};
+		383F44DF2E811CCE00ACE475 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		383F445E2E80459500ACE475 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383F445D2E80459500ACE475 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		383F44602E80459500ACE475 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383F445D2E80459500ACE475 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		383F44622E80459500ACE475 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383F445D2E80459500ACE475 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		383F44E02E811CCE00ACE475 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383F44DF2E811CCE00ACE475 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		383F44E22E811CCE00ACE475 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383F44DF2E811CCE00ACE475 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 383F43F02E80148900ACE475 /* Project object */;
 }
