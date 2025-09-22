@@ -9,8 +9,7 @@ import SwiftUI
 
 /*
  The Home Page of the application. Contains the list of Personas of the user.
- The UI design is preserved (header + ScrollView with tiles + floating add button).
- Only the data flow has been aligned to the Notes-style observe/add/delete pattern.
+ The UI design is preserved from the Prototype (header + ScrollView with tiles + floating add button).
 */
 
 struct HomeView: View {
@@ -22,58 +21,83 @@ struct HomeView: View {
     //Persona service initialised to manage the crud operations to firebase database
     private let service = PersonaService()
 
+    // Menu Drawer state (added)
+    @State private var showDrawer = false
+    @State private var showLogoutConfirm = false
+    @State private var showAbout = false
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Your Personas")
-                        .font(.title2)
-                        .bold()
-                        .padding(.horizontal)
-                        .padding(.top, 16)
+            // Menu Drawer container (added)
+            RightDrawer(isOpen: $showDrawer) {
+                ZStack {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Your Personas")
+                            .font(.title2)
+                            .bold()
+                            .padding(.horizontal)
+                            .padding(.top, 16)
 
-                    ScrollView {
-                        VStack(spacing: 16) {
-                            ForEach(personas) { persona in
-                                NavigationLink {
-                                    PersonaView(persona: persona)
-                                } label: {
-                                    Text(persona.name)
-                                        .font(.headline)
-                                        .frame(maxWidth: .infinity)
-                                        .padding(10)
-                                        .background(Color.accentColor)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(12)
-                                        .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                        ScrollView {
+                            VStack(spacing: 16) {
+                                ForEach(personas) { persona in
+                                    NavigationLink {
+                                        PersonaView(persona: persona)
+                                    } label: {
+                                        Text(persona.name)
+                                            .font(.headline)
+                                            .frame(maxWidth: .infinity)
+                                            .padding(10)
+                                            .background(Color.accentColor)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(12)
+                                            .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .padding(.horizontal, 8)
                                 }
-                                .buttonStyle(.plain)
-                                .padding(.horizontal, 8)
                             }
+                            .padding(.top, 8)
                         }
-                        .padding(.top, 8)
                     }
-                }
 
-                //Floating Add Button
-                VStack {
-                    Spacer()
-                    HStack {
+                    //Floating Add Button
+                    VStack {
                         Spacer()
-                        NavigationLink {
-                            AddPersonaView()
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.title2)
-                                .padding()
-                                .background(Color.accentColor)
-                                .foregroundColor(.white)
-                                .clipShape(Circle())
-                                .shadow(radius: 4)
+                        HStack {
+                            Spacer()
+                            NavigationLink {
+                                AddPersonaView()
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(.title2)
+                                    .padding()
+                                    .background(Color.accentColor)
+                                    .foregroundColor(.white)
+                                    .clipShape(Circle())
+                                    .shadow(radius: 4)
+                            }
+                            .padding()
                         }
-                        .padding()
                     }
                 }
+            } drawer: {
+                // Menu View call (added)
+                DrawerMenuView(
+                    email: nil,
+                    onSignOut: {
+                        withAnimation { showDrawer = false }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
+                            showLogoutConfirm = true
+                        }
+                    },
+                    onAbout: {
+                        withAnimation { showDrawer = false }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
+                            showAbout = true
+                        }
+                    }
+                )
             }
             .navigationTitle("Prosopo").font(.title)
             .navigationBarTitleDisplayMode(.large)
@@ -81,14 +105,20 @@ struct HomeView: View {
             .toolbarBackground(Color(.systemBackground), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { print("Menu tapped") }) {
+                    Button(action: { withAnimation { showDrawer.toggle() } }) {
                         Image(systemName: "line.horizontal.3")
                     }
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Sign Out") { auth.signOut() }
-                }
             }
+            // Logout confirmation for Menu View (added)
+            .confirmationDialog("Log out?", isPresented: $showLogoutConfirm, titleVisibility: .visible) {
+                Button("Log out", role: .destructive) {
+                    auth.signOut()
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            // About sheet for Menu View (added)
+            .sheet(isPresented: $showAbout) { AboutView() }
             .onAppear {
                 guard let uid = auth.userId else { return }
                 service.observePersonas(for: uid) { items in

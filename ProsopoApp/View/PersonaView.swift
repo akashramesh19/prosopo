@@ -38,7 +38,7 @@ struct PersonaView: View {
                     Button {
                         copyToClipboard(persona.prompt)
                         flashCopiedPopup()
-                        openCoPilot()
+                        openChatGPT()
                     } label: {
                         HStack(spacing: 8) {
                             Image("chatgpt_logo")
