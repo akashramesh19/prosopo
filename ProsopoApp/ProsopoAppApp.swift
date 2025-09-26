@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import FirebaseCore
 import GoogleSignIn
 
@@ -40,5 +41,6 @@ struct ProsopoApp: App {
             }
             .environmentObject(authVM)
         }
+        .modelContainer(for: [DraftPersona.self])
     }
 }

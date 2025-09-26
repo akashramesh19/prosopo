@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 /*
  UI unchanged from prototype.
@@ -19,9 +20,13 @@ struct AddPersonaView: View {
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var auth: AuthViewModel
+    @Environment(\.modelContext) private var modelContext
     @StateObject private var model = AddPersonaModel()
 
     private let service = PersonaService()
+
+    //Toast Pill for confirming that draft is saved
+    @State private var showDraftSaved = false
 
     var body: some View {
         Form {
@@ -62,6 +67,8 @@ struct AddPersonaView: View {
                         if let persona = await model.createPersona() {
                             do {
                                 try await service.addPersona(persona, userId: uid)
+                                //Deleting local draft after successful create
+                                model.deleteDrafts()
                                 await MainActor.run { dismiss() }
                             } catch {
                                 await MainActor.run { model.errorMessage = error.localizedDescription }
@@ -84,5 +91,46 @@ struct AddPersonaView: View {
         } message: {
             Text(model.errorMessage ?? "")
         }
+        .onAppear {
+            // bind context + user, then load most recent draft (if any)
+            model.bind(context: modelContext)
+            if let uid = auth.userId {
+                model.setUserId(uid)
+                model.loadDraftIfAny()
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Back") {
+                    //Save draft locally and show the pill before dismiss
+                    model.saveDraftIfPossible()
+                    withAnimation { showDraftSaved = true }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        withAnimation { showDraftSaved = false }
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .overlay(alignment: .top) {
+            if showDraftSaved {
+                DraftSavedPill()
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+    }
+}
+
+private struct DraftSavedPill: View {
+    var body: some View {
+        Text("Draft saved")
+            .font(.footnote.weight(.semibold))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+            .shadow(radius: 3, y: 2)
+            .padding(.top, 8)
     }
 }
