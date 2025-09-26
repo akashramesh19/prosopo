@@ -14,75 +14,32 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var auth: AuthViewModel
-
-    //Setting app state with the list of personas for the session
     @State private var personas: [Persona] = []
-
-    //Persona service initialised to manage the crud operations to firebase database
     private let service = PersonaService()
 
-    // Menu Drawer state (added)
     @State private var showDrawer = false
     @State private var showLogoutConfirm = false
     @State private var showAbout = false
 
+    @State private var selectedPersona: Persona? = nil
+    @State private var editingPersona: Persona? = nil
+
+    @State private var personaToDelete: Persona? = nil
+    @State private var showDeleteConfirm = false
+
     var body: some View {
         NavigationStack {
-            // Menu Drawer container (added)
             RightDrawer(isOpen: $showDrawer) {
-                ZStack {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Your Personas")
-                            .font(.title2)
-                            .bold()
-                            .padding(.horizontal)
-                            .padding(.top, 16)
-
-                        ScrollView {
-                            VStack(spacing: 16) {
-                                ForEach(personas) { persona in
-                                    NavigationLink {
-                                        PersonaView(persona: persona)
-                                    } label: {
-                                        Text(persona.name)
-                                            .font(.headline)
-                                            .frame(maxWidth: .infinity)
-                                            .padding(10)
-                                            .background(Color.accentColor)
-                                            .foregroundColor(.white)
-                                            .cornerRadius(12)
-                                            .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
-                                    }
-                                    .buttonStyle(.plain)
-                                    .padding(.horizontal, 8)
-                                }
-                            }
-                            .padding(.top, 8)
-                        }
+                HomeMain(
+                    personas: personas,
+                    onTapView: { selectedPersona = $0 },
+                    onTapEdit: { editingPersona = $0 },
+                    onAskDelete: { p in
+                        personaToDelete = p
+                        showDeleteConfirm = true
                     }
-
-                    //Floating Add Button
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            NavigationLink {
-                                AddPersonaView()
-                            } label: {
-                                Image(systemName: "plus")
-                                    .font(.title2)
-                                    .padding()
-                                    .background(Color.accentColor)
-                                    .foregroundColor(.white)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 4)
-                            }
-                            .padding()
-                        }
-                    }
-                }
+                )
             } drawer: {
-                // Menu View call (added)
                 DrawerMenuView(
                     email: nil,
                     onSignOut: {
@@ -101,23 +58,19 @@ struct HomeView: View {
             }
             .navigationTitle("Prosopo").font(.title)
             .navigationBarTitleDisplayMode(.large)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(Color(.systemBackground), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { withAnimation { showDrawer.toggle() } }) {
+                    Button {
+                        withAnimation { showDrawer.toggle() }
+                    } label: {
                         Image(systemName: "line.horizontal.3")
                     }
                 }
             }
-            // Logout confirmation for Menu View (added)
             .confirmationDialog("Log out?", isPresented: $showLogoutConfirm, titleVisibility: .visible) {
-                Button("Log out", role: .destructive) {
-                    auth.signOut()
-                }
+                Button("Log out", role: .destructive) { auth.signOut() }
                 Button("Cancel", role: .cancel) {}
             }
-            // About sheet for Menu View (added)
             .sheet(isPresented: $showAbout) { AboutView() }
             .onAppear {
                 guard let uid = auth.userId else { return }
@@ -125,13 +78,32 @@ struct HomeView: View {
                     self.personas = items
                 }
             }
-            .onDisappear {
-                service.stopObserving()
+            .onDisappear { service.stopObserving() }
+            .navigationDestination(item: $selectedPersona) { p in
+                PersonaView(persona: p)
+            }
+            .navigationDestination(item: $editingPersona) { p in
+                EditPersonaView(persona: p)
+            }
+            .confirmationDialog(
+                "Delete this persona?",
+                isPresented: $showDeleteConfirm,
+                titleVisibility: .visible,
+                presenting: personaToDelete
+            ) { p in
+                Button("Delete", role: .destructive) {
+                    Task {
+                        do {
+                            try await service.deletePersona(p)
+                        } catch {
+                            print("Failed to delete persona: \(error)")
+                        }
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { p in
+                Text("Are you sure you want to delete “\(p.name)”? This cannot be undone.")
             }
         }
     }
-}
-
-#Preview {
-    HomeView().environmentObject(AuthViewModel())
 }

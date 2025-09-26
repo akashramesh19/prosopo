@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct Persona: Identifiable, Codable {
+struct Persona: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
     var name: String
     var role: String
