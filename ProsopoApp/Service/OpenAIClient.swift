@@ -115,6 +115,18 @@ struct OpenAIContent: Decodable {
 final class OpenAIClient {
     private let endpoint = URL(string: "https://api.openai.com/v1/responses")!
     private let model = "gpt-4o-mini"
+    private let apiKey: String
+    
+    init() {
+        // Load API key from Secrets.plist
+        if let path = Bundle.main.path(forResource: "Secret", ofType: "plist"),
+           let dict = NSDictionary(contentsOfFile: path),
+           let key = dict["openAIKey"] as? String {
+            self.apiKey = key
+        } else {
+            fatalError("Missing OpenAI Key in Secret.plist")
+        }
+    }
 
     func generatePersonaPrompt(
         name: String,
@@ -126,7 +138,7 @@ final class OpenAIClient {
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue("Bearer \(Secrets.openAIKey)", forHTTPHeaderField: "Authorization")
+        req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         
         //The input text the app sends to Open AI. This was created to match consistency using ChatGPT.
         let input = """
