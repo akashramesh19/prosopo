@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 /*
  The Add persona model is used as a template to show the individual fields for the Add Persona page.
@@ -25,6 +26,10 @@ final class AddPersonaModel: ObservableObject {
 
     private let service = PromptService()
     
+    // SwiftData bindings for local drafts
+    private var context: ModelContext?
+    private var userId: String?
+
     //For form validation
     var canCreate: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -53,5 +58,65 @@ final class AddPersonaModel: ObservableObject {
             errorMessage = error.localizedDescription
             return nil
         }
+    }
+
+    func bind(context: ModelContext) {
+        self.context = context
+    }
+
+    func setUserId(_ uid: String) {
+        self.userId = uid
+    }
+
+    func saveDraftIfPossible() {
+        guard let context, let uid = userId else { return }
+        // upsert: one draft per user
+        if let existing = fetchDraft(for: uid, in: context) {
+            existing.name = name
+            existing.role = role
+            existing.toneRaw = tone.rawValue
+            existing.guardrail = guardrails
+            existing.consistency = consistency
+            existing.updatedAt = .now
+        } else {
+            let draft = DraftPersona(
+                userId: uid,
+                name: name,
+                role: role,
+                toneRaw: tone.rawValue,
+                guardrail: guardrails,
+                consistency: consistency
+            )
+            context.insert(draft)
+        }
+        try? context.save()
+    }
+
+    func loadDraftIfAny() {
+        guard let context, let uid = userId else { return }
+        if let d = fetchDraft(for: uid, in: context) {
+            name = d.name
+            role = d.role
+            tone = PersonaTone(rawValue: d.toneRaw) ?? .precise
+            guardrails = d.guardrail
+            consistency = d.consistency
+        }
+    }
+
+    func deleteDrafts() {
+        guard let context, let uid = userId else { return }
+        let predicate = #Predicate<DraftPersona> { $0.userId == uid }
+        if let items = try? context.fetch(FetchDescriptor<DraftPersona>(predicate: predicate)) {
+            for i in items { context.delete(i) }
+            try? context.save()
+        }
+    }
+
+    private func fetchDraft(for uid: String, in context: ModelContext) -> DraftPersona? {
+        let predicate = #Predicate<DraftPersona> { $0.userId == uid }
+        var desc = FetchDescriptor<DraftPersona>(predicate: predicate)
+        desc.sortBy = [SortDescriptor(\.updatedAt, order: .reverse)]
+        desc.fetchLimit = 1
+        return (try? context.fetch(desc))?.first
     }
 }
