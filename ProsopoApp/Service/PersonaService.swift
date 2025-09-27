@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-final class PersonaService {
+final class PersonaService : PersonaServiceProtocol {
     private let db = Firestore.firestore()
     private var listener: ListenerRegistration?
 
@@ -53,5 +53,22 @@ final class PersonaService {
     func deletePersona(_ persona: Persona) async throws {
         guard let id = persona.id else { return }
         try await collection.document(id).delete()
+    }
+    
+    //Checking for existing Personas with same name
+    func existsPersonaNamed(_ name: String, userId: String) async throws -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+        return try await withCheckedThrowingContinuation { cont in
+            Firestore.firestore()
+                .collection("personas")
+                .whereField("userId", isEqualTo: userId)
+                .whereField("name", isEqualTo: trimmed)
+                .limit(to: 1)
+                .getDocuments { snap, err in
+                    if let err = err { cont.resume(throwing: err) }
+                    else { cont.resume(returning: (snap?.documents.count ?? 0) > 0) }
+                }
+        }
     }
 }
