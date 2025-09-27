@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import FirebaseFirestore
 
 /*
  The Add persona model is used as a template to show the individual fields for the Add Persona page.
@@ -24,9 +25,11 @@ final class AddPersonaModel: ObservableObject {
     @Published var isCreating = false
     @Published var errorMessage: String?
 
-    private let service = PromptService()
+    //Using protocols so that it can be mocked in tests
+    private let promptService: PromptServiceProtocol
+    private let personaService: PersonaServiceProtocol
     
-    // SwiftData bindings for local drafts
+    //SwiftData bindings for local drafts
     private var context: ModelContext?
     private var userId: String?
 
@@ -36,11 +39,30 @@ final class AddPersonaModel: ObservableObject {
         !role.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !tone.rawValue.isEmpty
     }
+
+    //Default DI keeps production behavior unchanged
+    init(service: PersonaServiceProtocol = PersonaService(),
+         promptService: PromptServiceProtocol = PromptService()) {
+        self.personaService = service
+        self.promptService = promptService
+    }
     
     //To create persona and check if the persona is still creating in the view
     func createPersona() async -> Persona? {
         isCreating = true
         defer { isCreating = false }
+
+        if let uid = userId {
+            do {
+                if try await personaService.existsPersonaNamed(name, userId: uid) {
+                    errorMessage = "Persona name already exists."
+                    return nil
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+                return nil
+            }
+        }
 
         var persona = Persona(
             name: name,
@@ -51,7 +73,7 @@ final class AddPersonaModel: ObservableObject {
         )
 
         do {
-            let prompt = try await service.generatePrompt(for: persona)
+            let prompt = try await promptService.generatePrompt(for: persona)
             persona.prompt = prompt
             return persona
         } catch {
@@ -70,7 +92,7 @@ final class AddPersonaModel: ObservableObject {
 
     func saveDraftIfPossible() {
         guard let context, let uid = userId else { return }
-        // upsert: one draft per user
+        //Upsert: one draft per user
         if let existing = fetchDraft(for: uid, in: context) {
             existing.name = name
             existing.role = role

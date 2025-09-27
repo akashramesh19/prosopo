@@ -27,6 +27,8 @@ struct AddPersonaView: View {
 
     //Toast Pill for confirming that draft is saved
     @State private var showDraftSaved = false
+    //Toast Pill when duplicate name is detected
+    @State private var showDuplicateName = false
 
     var body: some View {
         Form {
@@ -64,6 +66,7 @@ struct AddPersonaView: View {
                             model.errorMessage = "Not signed in."
                             return
                         }
+                        //createPersona now blocks duplicates internally and surfaces an error string
                         if let persona = await model.createPersona() {
                             do {
                                 try await service.addPersona(persona, userId: uid)
@@ -72,6 +75,17 @@ struct AddPersonaView: View {
                                 await MainActor.run { dismiss() }
                             } catch {
                                 await MainActor.run { model.errorMessage = error.localizedDescription }
+                            }
+                        } else {
+                            //If duplicate name, show a pill and do not proceed
+                            if model.errorMessage == "Persona name already exists." {
+                                await MainActor.run {
+                                    withAnimation { showDuplicateName = true }
+                                }
+                                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                                await MainActor.run {
+                                    withAnimation { showDuplicateName = false }
+                                }
                             }
                         }
                     }
@@ -92,7 +106,7 @@ struct AddPersonaView: View {
             Text(model.errorMessage ?? "")
         }
         .onAppear {
-            // bind context + user, then load most recent draft (if any)
+            //Bind context + user, then load most recent draft (if any)
             model.bind(context: modelContext)
             if let uid = auth.userId {
                 model.setUserId(uid)
@@ -119,6 +133,13 @@ struct AddPersonaView: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
+        .overlay(alignment: .top) {
+            if showDuplicateName {
+                NameExistsPill()
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .padding(.top, 40)
+            }
+        }
     }
 }
 
@@ -132,5 +153,17 @@ private struct DraftSavedPill: View {
             .clipShape(Capsule())
             .shadow(radius: 3, y: 2)
             .padding(.top, 8)
+    }
+}
+
+private struct NameExistsPill: View {
+    var body: some View {
+        Text("Name already exists")
+            .font(.footnote.weight(.semibold))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+            .shadow(radius: 3, y: 2)
     }
 }
