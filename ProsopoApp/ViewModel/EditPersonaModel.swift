@@ -7,6 +7,13 @@
 
 import Foundation
 
+/**
+ View model for editing an existing persona.
+
+ Provides observable properties for persona fields, tracks save state,
+ and coordinates with services to update or delete personas.
+ A new prompt is regenerated whenever the persona is saved.
+ */
 @MainActor
 final class EditPersonaModel: ObservableObject {
 
@@ -22,6 +29,7 @@ final class EditPersonaModel: ObservableObject {
     private let promptService: PromptServiceProtocol
     private let service: PersonaServiceProtocol
 
+    /// Initializes the model with the original persona.
     init(original: Persona,
          promptService: PromptServiceProtocol = PromptService(),
          service: PersonaServiceProtocol = PersonaService()) {
@@ -35,11 +43,15 @@ final class EditPersonaModel: ObservableObject {
         self.service = service
     }
 
+    /// Indicates if the persona can be saved with current field values.
     var canSave: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !role.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    /// Saves updates to the persona by regenerating the prompt and persisting changes.
+    ///
+    /// - Returns: Updated persona if successful, otherwise `nil`.
     func save() async -> Persona? {
         guard canSave else { return nil }
         isSaving = true
@@ -63,6 +75,10 @@ final class EditPersonaModel: ObservableObject {
         }
     }
 
+    /// Deletes the persona after confirmation.
+    ///
+    /// - Parameter confirm: Ensures deletion is explicitly confirmed.
+    /// - Returns: `true` if deletion succeeded, `false` otherwise.
     func delete(confirm: Bool) async -> Bool {
         guard confirm else { return false }
         isSaving = true

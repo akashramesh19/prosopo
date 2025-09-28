@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A view displaying application information such as title, description, version, and attribution.
 struct AboutView: View {
     var body: some View {
         VStack(spacing: 12) {
@@ -25,8 +26,4 @@ struct AboutView: View {
         .padding()
         .presentationDetents([.height(160), .medium])
     }
-}
-
-#Preview {
-    AboutView()
 }

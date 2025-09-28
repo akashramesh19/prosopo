@@ -8,13 +8,27 @@
 import Foundation
 import FirebaseFirestore
 
-final class PersonaService : PersonaServiceProtocol {
+/**
+ A final class used to manage all persona-related operations in Firestore.
+
+ The service handles:
+ 1. Creation of new personas
+ 2. Updating existing personas
+ 3. Deletion of personas
+ 4. Retrieval and observation of persona collections
+ */
+final class PersonaService: PersonaServiceProtocol {
     private let db = Firestore.firestore()
     private var listener: ListenerRegistration?
 
+    /// A computed reference to the `personas` collection in Firestore.
     private var collection: CollectionReference { db.collection("personas") }
 
-    //Live listener to observe changes to personas and retrieval of personas from Firestore database
+    /// Observes personas for a specific user, returning updates in real time.
+    ///
+    /// - Parameters:
+    ///   - userId: The identifier of the user.
+    ///   - onChange: Closure invoked with the updated list of personas whenever data changes.
     func observePersonas(for userId: String, onChange: @escaping ([Persona]) -> Void) {
         listener?.remove()
         listener = collection
@@ -25,14 +39,19 @@ final class PersonaService : PersonaServiceProtocol {
                 onChange(items)
             }
     }
-
+    
+    /// Stops observing changes to the persona collection.
     func stopObserving() {
         listener?.remove()
         listener = nil
     }
 
-
-    //This is used for inserting new personas to the firestore database
+    /// Inserts a new persona document into Firestore.
+    ///
+    /// - Parameters:
+    ///   - persona: The persona object to insert.
+    ///   - userId: The identifier of the user to whom the persona belongs.
+    /// - Throws: An error if Firestore insertion fails.
     func addPersona(_ persona: Persona, userId: String) async throws {
         var p = persona
         p.userId = userId
@@ -41,7 +60,10 @@ final class PersonaService : PersonaServiceProtocol {
         _ = try collection.addDocument(from: p)
     }
 
-    //Used for updating Personas in database when user updates their saved personas
+    /// Updates an existing persona document in Firestore.
+    ///
+    /// - Parameter persona: The updated persona object. Requires a valid `id`.
+    /// - Throws: An error if Firestore update fails.
     func updatePersona(_ persona: Persona) async throws {
         guard let id = persona.id else { return }
         var p = persona
@@ -49,13 +71,22 @@ final class PersonaService : PersonaServiceProtocol {
         try collection.document(id).setData(from: p, merge: true)
     }
 
-    //Deleting personas from database
+    /// Deletes a persona document from Firestore.
+    ///
+    /// - Parameter persona: The persona object to delete. Requires a valid `id`.
+    /// - Throws: An error if Firestore deletion fails.
     func deletePersona(_ persona: Persona) async throws {
         guard let id = persona.id else { return }
         try await collection.document(id).delete()
     }
     
-    //Checking for existing Personas with same name
+    /// Checks whether a persona with the same name already exists for a user.
+    ///
+    /// - Parameters:
+    ///   - name: Name of the persona to check.
+    ///   - userId: The identifier of the user.
+    /// - Returns: `true` if a persona with the same name exists, otherwise `false`.
+    /// - Throws: An error if the Firestore query fails.
     func existsPersonaNamed(_ name: String, userId: String) async throws -> Bool {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return false }

@@ -8,6 +8,9 @@
 import Foundation
 import SwiftData
 
+/**
+ The Draft Persona model is used to match the storage and fetch of the drafted personas to SwiftData.
+ */
 @Model
 final class DraftPersona {
     @Attribute(.unique) var draftKey: String

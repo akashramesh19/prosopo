@@ -7,10 +7,15 @@
 
 import SwiftUI
 
+/// Main home screen layout displaying the list of personas and navigation to add new ones.
 struct HomeMain: View {
+    /// Personas to display.
     let personas: [Persona]
+    /// Action triggered when a persona is tapped for viewing.
     let onTapView: (Persona) -> Void
+    /// Action triggered when a persona is tapped for editing.
     let onTapEdit: (Persona) -> Void
+    /// Action triggered when a persona is requested for deletion.
     let onAskDelete: (Persona) -> Void
 
     var body: some View {

@@ -9,11 +9,16 @@ import Foundation
 import SwiftData
 import FirebaseFirestore
 
-/*
- The Add persona model is used as a template to show the individual fields for the Add Persona page.
- The can Create boolean is used to confirm if the form is valid to create the Persona (Required fields are present)
- */
+/**
+ View model for the Add Persona screen.
 
+ Provides published properties for form fields and state flags,
+ handles validation, and integrates with services for prompt
+ generation and persistence.
+
+ Drafts are managed locally with SwiftData to ensure progress
+ is not lost if the form is dismissed.
+ */
 @MainActor
 final class AddPersonaModel: ObservableObject {
     @Published var name = ""
@@ -25,29 +30,32 @@ final class AddPersonaModel: ObservableObject {
     @Published var isCreating = false
     @Published var errorMessage: String?
 
-    //Using protocols so that it can be mocked in tests
+    /// Services injected for prompt generation and persona persistence.
     private let promptService: PromptServiceProtocol
     private let personaService: PersonaServiceProtocol
     
-    //SwiftData bindings for local drafts
+    /// SwiftData context for managing local drafts.
     private var context: ModelContext?
+    /// Current user identifier, required for persistence and uniqueness checks.
     private var userId: String?
 
-    //For form validation
+    /// Form validation flag. Returns `true` if required fields are non-empty.
     var canCreate: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !role.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !tone.rawValue.isEmpty
     }
 
-    //Default DI keeps production behavior unchanged
+    /// Initializes the model with default production services.
     init(service: PersonaServiceProtocol = PersonaService(),
          promptService: PromptServiceProtocol = PromptService()) {
         self.personaService = service
         self.promptService = promptService
     }
     
-    //To create persona and check if the persona is still creating in the view
+    /// Creates a persona by validating input, checking for duplicates, and generating a prompt.
+    ///
+    /// - Returns: A new `Persona` object if successful, otherwise `nil`.
     func createPersona() async -> Persona? {
         isCreating = true
         defer { isCreating = false }
@@ -82,17 +90,21 @@ final class AddPersonaModel: ObservableObject {
         }
     }
 
+    /// Binds a SwiftData context for draft persistence.
     func bind(context: ModelContext) {
         self.context = context
     }
 
+    /// Assigns the current user identifier for persona operations.
     func setUserId(_ uid: String) {
         self.userId = uid
     }
 
+    /// Saves the current form state as a draft for the user.
+    ///
+    /// Ensures one draft per user (upsert behavior).
     func saveDraftIfPossible() {
         guard let context, let uid = userId else { return }
-        //Upsert: one draft per user
         if let existing = fetchDraft(for: uid, in: context) {
             existing.name = name
             existing.role = role
@@ -114,6 +126,7 @@ final class AddPersonaModel: ObservableObject {
         try? context.save()
     }
 
+    /// Loads the most recent draft for the current user if available.
     func loadDraftIfAny() {
         guard let context, let uid = userId else { return }
         if let d = fetchDraft(for: uid, in: context) {
@@ -125,6 +138,7 @@ final class AddPersonaModel: ObservableObject {
         }
     }
 
+    /// Deletes all drafts belonging to the current user.
     func deleteDrafts() {
         guard let context, let uid = userId else { return }
         let predicate = #Predicate<DraftPersona> { $0.userId == uid }
@@ -134,6 +148,7 @@ final class AddPersonaModel: ObservableObject {
         }
     }
 
+    /// Fetches the latest draft for a user.
     private func fetchDraft(for uid: String, in context: ModelContext) -> DraftPersona? {
         let predicate = #Predicate<DraftPersona> { $0.userId == uid }
         var desc = FetchDescriptor<DraftPersona>(predicate: predicate)

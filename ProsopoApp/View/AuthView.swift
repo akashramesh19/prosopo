@@ -8,11 +8,12 @@
 import SwiftUI
 import AuthenticationServices
 
-/*
- This view is used for Authentication in the beginning of the application.
- Sign options to sign in through apple or google account is shown to the user.
- */
+/**
+ A view providing authentication options at application launch.
 
+ Sign-in options are presented for Apple and Google accounts.
+ Errors from the authentication process are displayed inline.
+ */
 struct AuthView: View {
     @EnvironmentObject var auth: AuthViewModel
     @State private var isGoogleBusy = false
@@ -30,7 +31,7 @@ struct AuthView: View {
                     .padding(.horizontal)
             }
 
-            //Sign in with Apple
+            // Apple sign-in button
             SignInWithAppleButton(.signIn) { request in
                 auth.handleSignInWithAppleRequest(request)
             } onCompletion: { result in
@@ -41,7 +42,7 @@ struct AuthView: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal)
 
-            //Sign in with Google
+            // Google sign-in button
             GoogleWhiteTextButton(busy: isGoogleBusy) {
                 guard let vc = rootViewController() else {
                     auth.error = "Unable to find a presenting view controller."
@@ -58,7 +59,7 @@ struct AuthView: View {
         .padding()
     }
 
-    //Function to fetch the root view for the user
+    /// Retrieves the root view controller for presenting authentication flows.
     private func rootViewController() -> UIViewController? {
         UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
@@ -68,7 +69,7 @@ struct AuthView: View {
     }
 }
 
-//Custom Google button (white pill with centered "G")
+/// Custom Google button styled as a white pill with centered logo and text.
 private struct GoogleWhiteTextButton: View {
     var busy: Bool
     var action: () -> Void
@@ -81,7 +82,7 @@ private struct GoogleWhiteTextButton: View {
                         .progressViewStyle(.circular)
                 } else {
                     HStack(spacing: 10) {
-                        Image("google_g") //This asset is added to the Assests file to be presented in the button
+                        Image("google_g") // Asset stored in Assets.xcassets
                             .renderingMode(.original)
                             .resizable()
                             .scaledToFit()
@@ -96,12 +97,12 @@ private struct GoogleWhiteTextButton: View {
                     .padding(.horizontal, 12)
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: 48) //Similar to Apple-button proportions
+            .frame(maxWidth: .infinity, minHeight: 48) // Matches Apple button proportions
         }
         .background(Color.white)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color(.separator), lineWidth: 1) //Similar to subtle border like Apple’s white style
+                .stroke(Color(.separator), lineWidth: 1) // Subtle border
         )
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(color: .black.opacity(0.06), radius: 2, y: 1)

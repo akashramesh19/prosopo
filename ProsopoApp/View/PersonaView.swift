@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-/*
- UI for Viewing Persona Details.
- Contains the persona fields and a copy and open chatgpt option for the user.
-*/
+/**
+ View for displaying persona details.
 
+ Shows all persona fields with formatted presentation.
+ Includes actions to copy the generated prompt and open it in ChatGPT or Gemini.
+ */
 struct PersonaView: View {
+    /// Persona displayed in this view.
     let persona: Persona
     @State private var showCopied = false
     @Environment(\.openURL) private var openURL
@@ -58,7 +60,6 @@ struct PersonaView: View {
                     }
                     .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
 
-                    
                     Button {
                         copyToClipboard(persona.prompt)
                         flashCopiedPopup()
@@ -81,7 +82,7 @@ struct PersonaView: View {
                         .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                     }
                     .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
-                    
+
                     Button {
                         copyToClipboard(persona.prompt)
                         flashCopiedPopup()
@@ -122,14 +123,17 @@ struct PersonaView: View {
         }
     }
 
+    /// Converts consistency value into a percentage label.
     private func consistencyLabel(_ v: Double) -> String {
         return "\(Int(100 - (v * 100)))%"
     }
 
+    /// Copies text to clipboard.
     private func copyToClipboard(_ text: String) {
         UIPasteboard.general.string = text
     }
 
+    /// Displays a temporary copied popup.
     private func flashCopiedPopup() {
         withAnimation { showCopied = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
@@ -137,20 +141,22 @@ struct PersonaView: View {
         }
     }
 
+    /// Opens ChatGPT in Safari.
     private func openChatGPT() {
         if let url = URL(string: "https://chatgpt.com/") {
             openURL(url)
         }
     }
     
-    private func openGemini(){
-        if let url = URL(string: "https://gemini.google.com/"){
+    /// Opens Gemini in Safari.
+    private func openGemini() {
+        if let url = URL(string: "https://gemini.google.com/") {
             openURL(url)
         }
     }
 }
 
-// Reusable UI bits
+/// Reusable row for displaying persona details.
 private struct DetailRow: View {
     let title: String
     let value: String
@@ -173,7 +179,7 @@ private struct DetailRow: View {
     }
 }
 
-//Copied popup message
+/// Toast message shown when a prompt is copied.
 private struct CopiedMessage: View {
     var body: some View {
         Text("Prompt copied")
