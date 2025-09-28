@@ -12,17 +12,19 @@ import FirebaseAuth
 import FirebaseCore
 import GoogleSignIn
 
-/*
- Reference taken from Firebase documentations.
- At this point Apple Authentication is yet to work due to the lack of apple developer program enrollment.
- However, google authentication has been tested and good to go.
- */
+/**
+ View model managing user authentication state and flows.
 
+ Supports sign-in with Apple and Google, using Firebase as the backend.
+ Apple authentication setup requires an enrolled Apple Developer account,
+ while Google authentication has been tested and verified.
+ */
 @MainActor
 final class AuthViewModel: ObservableObject {
     @Published var error: String?
     @Published var isAuthenticated: Bool = Auth.auth().currentUser != nil
 
+    /// Current authenticated user ID.
     var userId: String? { Auth.auth().currentUser?.uid }
     private var currentNonce: String?
 
@@ -32,6 +34,7 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
+    /// Prepares the Apple sign-in request with nonce and requested scopes.
     func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
         let nonce = randomNonceString()
         currentNonce = nonce
@@ -39,6 +42,7 @@ final class AuthViewModel: ObservableObject {
         request.nonce = sha256(nonce)
     }
 
+    /// Handles the completion of Apple sign-in and authenticates with Firebase.
     func handleSignInWithAppleCompletion(_ result: Result<ASAuthorization, Error>) async {
         switch result {
         case .failure(let err):
@@ -59,7 +63,6 @@ final class AuthViewModel: ObservableObject {
                 return
             }
 
-            // Apple-specific Firebase credential
             let firebaseCredential = OAuthProvider.appleCredential(
                 withIDToken: idTokenString,
                 rawNonce: nonce,
@@ -80,6 +83,7 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
+    /// Signs in with Google using FirebaseAuth.
     func signInWithGoogle(presenting viewController: UIViewController) async {
         do {
             guard let clientID = FirebaseApp.app()?.options.clientID else {
@@ -97,8 +101,10 @@ final class AuthViewModel: ObservableObject {
             }
 
             let accessToken = user.accessToken.tokenString
-            let credential = GoogleAuthProvider.credential(withIDToken: idToken,
-                                                           accessToken: accessToken)
+            let credential = GoogleAuthProvider.credential(
+                withIDToken: idToken,
+                accessToken: accessToken
+            )
 
             _ = try await signIn(with: credential)
         } catch {
@@ -106,11 +112,13 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
+    /// Signs the current user out.
     func signOut() {
         do { try Auth.auth().signOut() }
         catch { self.error = error.localizedDescription }
     }
 
+    /// Wraps Firebase sign-in for async/await.
     private func signIn(with credential: AuthCredential) async throws -> AuthDataResult {
         try await withCheckedThrowingContinuation { (cont: CheckedContinuation<AuthDataResult, Error>) in
             Auth.auth().signIn(with: credential) { result, error in
@@ -125,6 +133,7 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
+    /// Updates Firebase user profile with a display name.
     private func updateDisplayName(_ name: String) async throws {
         guard let user = Auth.auth().currentUser else { return }
         try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
@@ -140,12 +149,14 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
+    /// Hashes a string with SHA-256.
     private func sha256(_ input: String) -> String {
         let data = Data(input.utf8)
         let hashed = SHA256.hash(data: data)
         return hashed.map { String(format: "%02x", $0) }.joined()
     }
 
+    /// Generates a random nonce string for Apple sign-in.
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
@@ -167,4 +178,3 @@ final class AuthViewModel: ObservableObject {
         return result
     }
 }
-

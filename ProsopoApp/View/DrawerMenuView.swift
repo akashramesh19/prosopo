@@ -7,9 +7,13 @@
 
 import SwiftUI
 
+/// Drawer menu view providing logout and about options, with optional user email shown at the bottom.
 struct DrawerMenuView: View {
+    /// Email of the currently signed-in user, displayed in the footer if available.
     let email: String?
+    /// Action executed when logout is selected.
     let onSignOut: () -> Void
+    /// Action executed when about is selected.
     let onAbout: () -> Void
 
     var body: some View {

@@ -7,10 +7,15 @@
 
 import SwiftUI
 
+/// A scrollable list of persona tiles with view, edit, and delete actions.
 struct PersonasList: View {
+    /// Collection of personas to display.
     let personas: [Persona]
+    /// Action triggered when a persona tile is tapped for viewing.
     let onTapView: (Persona) -> Void
+    /// Action triggered when a persona tile is tapped for editing.
     let onTapEdit: (Persona) -> Void
+    /// Action triggered when a persona tile is requested for deletion.
     let onAskDelete: (Persona) -> Void
 
     var body: some View {
@@ -36,14 +41,22 @@ struct PersonasList: View {
     }
 }
 
-// Single tap -> view
-// Double tap -> edit
-// Long press -> copy
-// Triple tap -> delete
+/**
+ A tile representing a single persona with multiple gesture-based actions.
+
+ - Single tap → view persona
+ - Double tap → edit persona
+ - Long press → copy persona prompt
+ - Triple tap → delete persona
+ */
 struct PersonaTile: View {
+    /// Persona represented by the tile.
     let persona: Persona
+    /// Action executed when tile is tapped once.
     var onViewTap:   (() -> Void)? = nil
+    /// Action executed when tile is double tapped.
     var onEditTap:   (() -> Void)? = nil
+    /// Action executed when tile is triple tapped or delete is requested.
     var onAskDelete: (() -> Void)? = nil
 
     @State private var showCopied = false
@@ -71,7 +84,7 @@ struct PersonaTile: View {
                     .padding(.top, 6)
             }
         }
-        // triple tap -> delete
+        // Triple tap → delete
         .highPriorityGesture(
             TapGesture(count: 3).onEnded {
                 pendingAny = true
@@ -80,7 +93,7 @@ struct PersonaTile: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { pendingAny = false }
             }
         )
-        // double tap -> edit
+        // Double tap → edit
         .gesture(
             TapGesture(count: 2).onEnded {
                 pendingAny = true
@@ -89,7 +102,7 @@ struct PersonaTile: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { pendingAny = false }
             }
         )
-        // long press -> copy
+        // Long press → copy prompt
         .simultaneousGesture(
             LongPressGesture(minimumDuration: 0.25, maximumDistance: 12)
                 .onEnded { didHold in
@@ -101,7 +114,7 @@ struct PersonaTile: View {
                     }
                 }
         )
-        // single tap -> view (delayed slightly so the above can pre-empt)
+        // Single tap → view
         .simultaneousGesture(
             TapGesture(count: 1).onEnded {
                 singleTapWork?.cancel()
@@ -115,6 +128,7 @@ struct PersonaTile: View {
         .accessibilityLabel("\(persona.name). Tap to view, double tap to edit, long press to copy, triple tap to delete.")
     }
 
+    /// Copies the persona prompt to clipboard with haptic feedback and shows a confirmation pill.
     private func copyPrompt() {
         UIPasteboard.general.string = persona.prompt
         let h = UINotificationFeedbackGenerator()
@@ -126,6 +140,7 @@ struct PersonaTile: View {
     }
 }
 
+/// A pill view shown temporarily when a persona prompt is copied.
 private struct TileCopiedPill: View {
     var body: some View {
         Text("Prompt copied")

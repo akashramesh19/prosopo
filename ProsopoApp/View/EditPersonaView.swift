@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-/*
- Mirrors Add screen styling but pre-filled with the persona.
- Regenerates prompt via PromptService (like AddPersonaModel does),
- then calls PersonaService.updatePersona.
-*/
+/**
+ A form view used to edit an existing persona.
 
+ Styling mirrors the add screen but fields are pre-filled
+ with the original persona. The prompt is regenerated via
+ `PromptService` in `EditPersonaModel.save()`, followed by
+ an update request to `PersonaService.updatePersona`.
+ */
 struct EditPersonaView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -21,6 +23,9 @@ struct EditPersonaView: View {
 
     private let original: Persona
     
+    /// Initializes the view with an existing persona.
+    ///
+    /// - Parameter persona: The persona being edited.
     init(persona: Persona) {
         self._model = StateObject(wrappedValue: EditPersonaModel(original: persona))
         self.original = persona
@@ -53,6 +58,7 @@ struct EditPersonaView: View {
             }
 
             Section {
+                // Save changes
                 Button {
                     Task {
                         if let _ = await model.save() {
@@ -68,7 +74,7 @@ struct EditPersonaView: View {
                 }
                 .disabled(model.isSaving || !model.canSave)
 
-                //Delete the Persona
+                // Delete persona
                 Button(role: .destructive) {
                     showDeleteConfirm = true
                 } label: {
@@ -91,7 +97,7 @@ struct EditPersonaView: View {
                     }
                 }
             }
-            Button("Cancel", role: .cancel) { /* no-op */ }
+            Button("Cancel", role: .cancel) { }
         } message: {
             Text("This action cannot be undone.")
         }

@@ -7,11 +7,17 @@
 
 import SwiftUI
 
-/*
- The Home Page of the application. Contains the list of Personas of the user.
- The UI design is preserved from the Prototype (header + ScrollView with tiles + floating add button).
-*/
+/**
+ Main home page of the application.
 
+ Displays the list of personas for the authenticated user.
+ The UI structure is consistent with the prototype design:
+ - Header section
+ - Scroll view of persona tiles
+ - Floating add button
+
+ Includes a right-side drawer with logout and about options.
+ */
 struct HomeView: View {
     @EnvironmentObject var auth: AuthViewModel
     @State private var personas: [Persona] = []

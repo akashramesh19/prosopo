@@ -7,13 +7,22 @@
 
 import Foundation
 
-/*
- The actual service that is used to call the generate prompt function to the API. Async and await is used to block the main thread (UI) till the function completes building network connection with Open AI API, sends request, waits for response and receives response. This way the main thread of the application does not break and UI is not affected till this is done.
- */
+/**
+ Service responsible for generating prompts via the OpenAI client.
 
-final class PromptService : PromptServiceProtocol {
+ The class delegates the request to `OpenAIClient` and ensures that
+ prompt generation is executed asynchronously without blocking the
+ main thread. This preserves UI responsiveness while network calls
+ are performed in the background.
+ */
+final class PromptService: PromptServiceProtocol {
     private let client = OpenAIClient()
 
+    /// Generates a system prompt string for the given persona.
+    ///
+    /// - Parameter persona: Persona whose attributes are used to construct the prompt.
+    /// - Returns: A completed prompt string generated from OpenAI.
+    /// - Throws: An error if the request or response parsing fails.
     func generatePrompt(
         for persona: Persona
     ) async throws -> String {

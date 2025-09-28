@@ -8,6 +8,12 @@
 import Foundation
 import SwiftData
 
+/**
+ Draft Repository is used to upsert and fetch drafts to SwiftData in the IPhone.
+ The drafts are upserted as one user can only have one draft.
+ 
+ A Delete Draft function is also defined to delete the draft once the user creates the Persona.
+ **/
 struct DraftRepository {
     let context: ModelContext
 
