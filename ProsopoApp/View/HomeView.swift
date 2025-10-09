@@ -82,6 +82,14 @@ struct HomeView: View {
                 guard let uid = auth.userId else { return }
                 service.observePersonas(for: uid) { items in
                     self.personas = items
+
+                    // keep favourite at the top if present
+                    if let fav = FavoriteStore.load() {
+                        if let idx = self.personas.firstIndex(where: { ($0.id ?? "") == fav.id }) {
+                            let p = self.personas.remove(at: idx)
+                            self.personas.insert(p, at: 0)
+                        }
+                    }
                 }
             }
             .onDisappear { service.stopObserving() }
