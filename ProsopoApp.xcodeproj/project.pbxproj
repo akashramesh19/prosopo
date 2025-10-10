@@ -12,6 +12,13 @@
 		383F44632E80459500ACE475 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44622E80459500ACE475 /* FirebaseFirestore */; };
 		383F44E12E811CCE00ACE475 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44E02E811CCE00ACE475 /* GoogleSignIn */; };
 		383F44E32E811CCE00ACE475 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 383F44E22E811CCE00ACE475 /* GoogleSignInSwift */; };
+		385F9A2A2E976FF800577C45 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 385F9A012E976D0D00577C45 /* WidgetKit.framework */; };
+		385F9A2B2E976FF800577C45 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 385F9A032E976D0D00577C45 /* SwiftUI.framework */; };
+		385F9A382E976FF900577C45 /* PersonasWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 385F9A292E976FF800577C45 /* PersonasWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		385F9A402E97721600577C45 /* FavoriteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F9A3F2E97714800577C45 /* FavoriteStore.swift */; };
+		385F9A412E97721600577C45 /* FavoriteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F9A3F2E97714800577C45 /* FavoriteStore.swift */; };
+		385F9A422E97721D00577C45 /* FavoritePersona.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F9A3E2E97711800577C45 /* FavoritePersona.swift */; };
+		385F9A432E97721D00577C45 /* FavoritePersona.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F9A3E2E97711800577C45 /* FavoritePersona.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,12 +36,39 @@
 			remoteGlobalIDString = 383F43F72E80148900ACE475;
 			remoteInfo = ProsopoApp;
 		};
+		385F9A362E976FF900577C45 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 383F43F02E80148900ACE475 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 385F9A282E976FF800577C45;
+			remoteInfo = PersonasWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		385F9A1A2E976D0F00577C45 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				385F9A382E976FF900577C45 /* PersonasWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		383F43F82E80148900ACE475 /* ProsopoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProsopoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		383F440A2E80148B00ACE475 /* ProsopoAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProsopoAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		383F44142E80148B00ACE475 /* ProsopoAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProsopoAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		385F9A012E976D0D00577C45 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		385F9A032E976D0D00577C45 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		385F9A292E976FF800577C45 /* PersonasWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PersonasWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		385F9A3E2E97711800577C45 /* FavoritePersona.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePersona.swift; sourceTree = "<group>"; };
+		385F9A3F2E97714800577C45 /* FavoriteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStore.swift; sourceTree = "<group>"; };
+		385F9A492E97ECBC00577C45 /* PersonasWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PersonasWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -44,6 +78,13 @@
 				Info.plist,
 			);
 			target = 383F43F72E80148900ACE475 /* ProsopoApp */;
+		};
+		385F9A3C2E976FF900577C45 /* Exceptions for "PersonasWidget" folder in "PersonasWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 385F9A282E976FF800577C45 /* PersonasWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -59,6 +100,14 @@
 		383F440D2E80148B00ACE475 /* ProsopoAppTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ProsopoAppTests;
+			sourceTree = "<group>";
+		};
+		385F9A2C2E976FF800577C45 /* PersonasWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				385F9A3C2E976FF900577C45 /* Exceptions for "PersonasWidget" folder in "PersonasWidgetExtension" target */,
+			);
+			path = PersonasWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -90,14 +139,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		385F9A262E976FF800577C45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				385F9A2B2E976FF800577C45 /* SwiftUI.framework in Frameworks */,
+				385F9A2A2E976FF800577C45 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		383F43EF2E80148900ACE475 = {
 			isa = PBXGroup;
 			children = (
+				385F9A492E97ECBC00577C45 /* PersonasWidgetExtension.entitlements */,
+				385F9A3D2E9770CD00577C45 /* Shared */,
 				383F43FA2E80148900ACE475 /* ProsopoApp */,
 				383F440D2E80148B00ACE475 /* ProsopoAppTests */,
+				385F9A2C2E976FF800577C45 /* PersonasWidget */,
+				385F9A002E976D0D00577C45 /* Frameworks */,
 				383F43F92E80148900ACE475 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,8 +170,27 @@
 				383F43F82E80148900ACE475 /* ProsopoApp.app */,
 				383F440A2E80148B00ACE475 /* ProsopoAppTests.xctest */,
 				383F44142E80148B00ACE475 /* ProsopoAppUITests.xctest */,
+				385F9A292E976FF800577C45 /* PersonasWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		385F9A002E976D0D00577C45 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				385F9A012E976D0D00577C45 /* WidgetKit.framework */,
+				385F9A032E976D0D00577C45 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		385F9A3D2E9770CD00577C45 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				385F9A3F2E97714800577C45 /* FavoriteStore.swift */,
+				385F9A3E2E97711800577C45 /* FavoritePersona.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -122,10 +203,12 @@
 				383F43F42E80148900ACE475 /* Sources */,
 				383F43F52E80148900ACE475 /* Frameworks */,
 				383F43F62E80148900ACE475 /* Resources */,
+				385F9A1A2E976D0F00577C45 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				385F9A372E976FF900577C45 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				383F43FA2E80148900ACE475 /* ProsopoApp */,
@@ -185,6 +268,28 @@
 			productReference = 383F44142E80148B00ACE475 /* ProsopoAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		385F9A282E976FF800577C45 /* PersonasWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 385F9A392E976FF900577C45 /* Build configuration list for PBXNativeTarget "PersonasWidgetExtension" */;
+			buildPhases = (
+				385F9A252E976FF800577C45 /* Sources */,
+				385F9A262E976FF800577C45 /* Frameworks */,
+				385F9A272E976FF800577C45 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				385F9A2C2E976FF800577C45 /* PersonasWidget */,
+			);
+			name = PersonasWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = PersonasWidgetExtension;
+			productReference = 385F9A292E976FF800577C45 /* PersonasWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -205,6 +310,9 @@
 					383F44132E80148B00ACE475 = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 383F43F72E80148900ACE475;
+					};
+					385F9A282E976FF800577C45 = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -229,6 +337,7 @@
 				383F43F72E80148900ACE475 /* ProsopoApp */,
 				383F44092E80148B00ACE475 /* ProsopoAppTests */,
 				383F44132E80148B00ACE475 /* ProsopoAppUITests */,
+				385F9A282E976FF800577C45 /* PersonasWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -255,6 +364,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		385F9A272E976FF800577C45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -262,6 +378,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				385F9A402E97721600577C45 /* FavoriteStore.swift in Sources */,
+				385F9A422E97721D00577C45 /* FavoritePersona.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +397,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		385F9A252E976FF800577C45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				385F9A412E97721600577C45 /* FavoriteStore.swift in Sources */,
+				385F9A432E97721D00577C45 /* FavoritePersona.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -291,6 +418,11 @@
 			isa = PBXTargetDependency;
 			target = 383F43F72E80148900ACE475 /* ProsopoApp */;
 			targetProxy = 383F44152E80148B00ACE475 /* PBXContainerItemProxy */;
+		};
+		385F9A372E976FF900577C45 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 385F9A282E976FF800577C45 /* PersonasWidgetExtension */;
+			targetProxy = 385F9A362E976FF900577C45 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -419,12 +551,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ProsopoApp/ProsopoApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ProsopoApp/Preview Content\"";
+				DEVELOPMENT_TEAM = F55CGWXSJV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ProsopoApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Prosopo;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -448,12 +584,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ProsopoApp/ProsopoApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ProsopoApp/Preview Content\"";
+				DEVELOPMENT_TEAM = F55CGWXSJV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ProsopoApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Prosopo;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -540,6 +680,62 @@
 			};
 			name = Release;
 		};
+		385F9A3A2E976FF900577C45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PersonasWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F55CGWXSJV;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PersonasWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PersonasWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "a1-s4097941.ProsopoApp.PersonasWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		385F9A3B2E976FF900577C45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PersonasWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F55CGWXSJV;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PersonasWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PersonasWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "a1-s4097941.ProsopoApp.PersonasWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -575,6 +771,15 @@
 			buildConfigurations = (
 				383F44252E80148B00ACE475 /* Debug */,
 				383F44262E80148B00ACE475 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		385F9A392E976FF900577C45 /* Build configuration list for PBXNativeTarget "PersonasWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				385F9A3A2E976FF900577C45 /* Debug */,
+				385F9A3B2E976FF900577C45 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

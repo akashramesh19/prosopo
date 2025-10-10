@@ -12,6 +12,16 @@
 				<string>com.googleusercontent.apps.445621132386-ogatl9e69bld6vvkaiptvbd7c3quhm7u</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>prosopo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>prosopo</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

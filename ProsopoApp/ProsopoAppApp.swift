@@ -34,17 +34,29 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct ProsopoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var authVM = AuthViewModel()
+    @StateObject private var copyManager = CopyManager()     
 
     var body: some Scene {
         WindowGroup {
-            Group {
-                if authVM.isAuthenticated {
-                    HomeView()
-                } else {
-                    AuthView()
+            ZStack {
+                Group {
+                    if authVM.isAuthenticated {
+                        HomeView()
+                    } else {
+                        AuthView()
+                    }
                 }
             }
             .environmentObject(authVM)
+            .environmentObject(copyManager)
+            .onOpenURL { url in copyManager.handle(url: url) }
+            .overlay(alignment: .top) {
+                if let name = copyManager.copiedName {
+                    CopiedToast(text: "Copied: \(name)")
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .zIndex(10)
+                }
+            }
         }
         .modelContainer(for: [DraftPersona.self])
     }
