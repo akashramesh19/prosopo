@@ -11,8 +11,10 @@ Team & Repo:
 Data Overview:
 SwiftData
 - Draft Persona
+  
 UserDefault
 - Favourite Persona
+  
 Firebase (The Google Info Plist is not committed to the repo)
 - Users
 - Persona
