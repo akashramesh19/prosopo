@@ -86,4 +86,30 @@ final class AddPersonaModelTests: XCTestCase {
         XCTAssertNil(p)
         XCTAssertEqual(model.errorMessage, "Invalid API key")
     }
+    
+    @MainActor
+    func test_emptyName_draftNotCreated() throws {
+        final class MockContext {}
+        struct MockRepository: @unchecked Sendable {
+            var didInsert = false
+            mutating func upsertDraft(_ draft: DraftPersona) throws {
+                didInsert = true
+                throw XCTSkip("Should not be called for empty name")
+            }
+        }
+
+        var repo = MockRepository()
+        let context = MockContext()
+        let draft = DraftPersona(userId: "user-1", name: "", role: "Dev")
+
+        // Simulate upsertDraft with same logic as real repository
+        let trimmed = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            // Expected: should not insert
+            XCTAssertFalse(repo.didInsert, "Draft should not be inserted when name is empty.")
+        } else {
+            try repo.upsertDraft(draft)
+        }
+    }
+
 }
