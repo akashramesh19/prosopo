@@ -35,6 +35,13 @@ Widget working:
 - Shows the favourite persona tile.
 - When clicked copies the prompt to clipboard.
 
+UIKit + SwiftUI Integration:
+Share Sheet is introduced for this specification. Within the context of the application, this seemed the most logical use of UIKit.
+The user is able to share personas using the Share Sheet that can be viewed in other IOS native apps.
+Why this requires UIKit and not just SwiftUI:
+- SwiftUI does not have an API that calls the native share sheet used in IOS apps. 
+- To do this, UIActivityViewController (Part of UIKit) is required, hence why UIKit integration is required for this.
+
 Moment to Shine Functionalities:
 Use of LLM to suggest persona fields to the user based on user description.
 Why this is not a simple call and response from ChatGPT:
