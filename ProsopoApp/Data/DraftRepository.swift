@@ -18,6 +18,9 @@ struct DraftRepository {
     let context: ModelContext
 
     func upsertDraft(_ draft: DraftPersona) throws {
+        let trimmed = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        draft.name = trimmed
         if let existing = try fetchDraft(userId: draft.userId) {
             existing.name = draft.name
             existing.role = draft.role

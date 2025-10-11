@@ -117,11 +117,15 @@ struct AddPersonaView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Back") {
-                    // Save draft locally and show pill before dismissing.
-                    model.saveDraftIfPossible()
-                    withAnimation { showDraftSaved = true }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        withAnimation { showDraftSaved = false }
+                    let hasName = !model.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    if hasName {
+                        model.saveDraftIfPossible()
+                        withAnimation { showDraftSaved = true }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            withAnimation { showDraftSaved = false }
+                            dismiss()
+                        }
+                    } else {
                         dismiss()
                     }
                 }
