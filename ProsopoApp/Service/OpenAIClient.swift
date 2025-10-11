@@ -172,4 +172,61 @@ final class OpenAIClient {
         }
         return String(data: data, encoding: .utf8) ?? ""
     }
+    
+    /// Suggests persona fields from a free-form description.
+    ///
+    /// - Parameter description: User-provided description of the desired persona.
+    /// - Returns: A Persona with fields populated from the description. The prompt is not generated here.
+    func suggestPersona(fromDescription description: String) async throws -> Persona {
+        var req = URLRequest(url: endpoint)
+        req.httpMethod = "POST"
+        req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+
+        let jsonInstruction = """
+        You are to extract persona fields from the description and return STRICT JSON.
+        JSON keys: name, role, tone, guardrails, consistency.
+        - tone MUST be one of: precise, supportive, constructive, concise, assertive, friendly. Only out of these words, one word only.
+        - consistency MUST be a number between 0 and 1. If unclear, use 0.5.
+        - name should be short (max 3 words). If none is given, create a concise, professional name.
+        - role should be one word describing the role.
+        - guardrails should be a short string of constraints/scope.
+        Return ONLY the JSON, no backticks.
+        Description:
+        \(description)
+        """
+
+        let payload = OpenAIResponsesRequest(model: model, input: jsonInstruction)
+        req.httpBody = try JSONEncoder().encode(payload)
+
+        let (data, resp) = try await URLSession.shared.data(for: req)
+        guard let http = resp as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
+            throw URLError(.badServerResponse)
+        }
+        let text: String
+        if let t = try? decodePromptText(from: data) { text = t }
+        else if let t = try? fallbackExtractText(from: data) { text = t }
+        else { throw URLError(.cannotParseResponse) }
+
+        struct Suggestion: Decodable {
+            let name: String
+            let role: String
+            let tone: String
+            let guardrails: String
+            let consistency: Double?
+        }
+
+        guard let jsonData = text.data(using: .utf8) else { throw URLError(.cannotDecodeRawData) }
+        let s = try JSONDecoder().decode(Suggestion.self, from: jsonData)
+
+        let tone = PersonaTone(rawValue: s.tone.lowercased()) ?? .precise
+        let persona = Persona(
+            name: s.name.trimmingCharacters(in: .whitespacesAndNewlines),
+            role: s.role.trimmingCharacters(in: .whitespacesAndNewlines),
+            tone: tone,
+            guardrail: s.guardrails.trimmingCharacters(in: .whitespacesAndNewlines),
+            consistency: min(1, max(0, s.consistency ?? 0.5))
+        )
+        return persona
+    }
 }
