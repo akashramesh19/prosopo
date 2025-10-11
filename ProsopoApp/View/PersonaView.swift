@@ -95,6 +95,9 @@ struct PersonaView: View {
                             .foregroundColor(.primary)
                             .cornerRadius(12)
                     }
+
+                    // Share sheet button
+                    SharePromptButton(persona: persona)
                 }
                 .padding(.top, 8)
             }
